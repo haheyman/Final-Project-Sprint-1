@@ -223,13 +223,25 @@ def api_add_teacher():
 
     myCreds = creds.Creds()
     conn = create_connection(myCreds.hostname, myCreds.uname, myCreds.passwd, myCreds.dbname)
+    
     if conn is not None:
         cursor=conn.cursor()
-        cursor.execute("INSERT INTO teacher (firstname, lastname, classroom_id) VALUES (%s, %s, %s)", 
+        #Adding constraints for classroom capacity
+        cursor.execute("SELECT capacity FROM classroom WHERE id=%s", (classroomid,))
+        classroom_capacity = cursor.fetchone()[0]
+
+        cursor.execute("SELECT COUNT(*) FROM teacher WHERE classroom_id=%s", (classroomid,))
+        num_teachers = cursor.fetchone()[0]
+
+        #Check if constraint is validated
+        if classroom_capacity < (num_teachers*10):
+            cursor.execute("INSERT INTO teacher (firstname, lastname, classroom_id) VALUES (%s, %s, %s)", 
                        (firstname, lastname, classroomid))
-        conn.commit()
-        conn.close()
-        return "Teacher added successfully"
+            conn.commit()
+            conn.close()
+            return "Teacher added successfully"
+        else:
+            return "Capacity already reached, choose another classroom"
     else:
         return "Error connecting to database"
 
@@ -315,13 +327,24 @@ def api_add_child():
     conn = create_connection(myCreds.hostname, myCreds.uname, myCreds.passwd, myCreds.dbname)
     if conn is not None:
         cursor=conn.cursor()
-        cursor.execute("INSERT INTO child (firstname, lastname, age, classroom_id) VALUES (%s, %s, %s, %s)", 
+        # Count the number of children and teachers in the classroom
+        cursor.execute("SELECT COUNT(*) FROM child WHERE classroom_id=%s", (classroomid,))
+        num_children = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT COUNT(*) FROM teacher WHERE classroom_id=%s", (classroomid,))
+        num_teachers = cursor.fetchone()[0]
+        
+        # Check if the constraint is violated
+        if num_children < (10 * num_teachers):
+            cursor.execute("INSERT INTO child (firstname, lastname, age, classroom_id) VALUES (%s, %s, %s, %s)", 
                        (firstname, lastname, age, classroomid))
-        conn.commit()
-        conn.close()
-        return "Child added successfully"
+            conn.commit()
+            conn.close()
+            return "Child added successfully"
+        else:
+            return "Classroom full, choose another classroom"
     else:
-        return "Error connecting to database"
+        "Error connecting to database"
 
 # API endpoint to update an existing child
 @app.route('/api/children/put', methods=['PUT'])
