@@ -21,7 +21,7 @@ CREATE TABLE if not exists teacher (
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     room INT,
-    FOREIGN KEY (room) REFERENCES classroom(id)
+    FOREIGN KEY (room) REFERENCES classroom(name)
 );
 
 -- Create the child table
@@ -31,5 +31,5 @@ CREATE TABLE if not exists child (
     lastname VARCHAR(255) NOT NULL,
     age INT NOT NULL,
     room INT,
-    FOREIGN KEY (room) REFERENCES classroom(id)
+    FOREIGN KEY (room) REFERENCES classroom(name)
 );
