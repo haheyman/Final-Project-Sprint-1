@@ -20,8 +20,8 @@ CREATE TABLE if not exists teacher (
     id INT AUTO_INCREMENT PRIMARY KEY,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
-    room INT,
-    FOREIGN KEY (room) REFERENCES classroom(name)
+    classroom_id INT,
+    FOREIGN KEY (classroom_id) REFERENCES classroom(id)
 );
 
 -- Create the child table
@@ -30,6 +30,6 @@ CREATE TABLE if not exists child (
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     age INT NOT NULL,
-    room INT,
-    FOREIGN KEY (room) REFERENCES classroom(name)
+    classroom_id INT,
+    FOREIGN KEY (classroom_id) REFERENCES classroom(id)
 );
