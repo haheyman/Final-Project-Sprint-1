@@ -50,7 +50,7 @@ def api_add_facility():
     if conn is not None:
         cursor=conn.cursor()
         cursor.execute("INSERT INTO facility (name) VALUES (%s)", 
-                       (name))
+                       (name,))
         conn.commit()
         conn.close()
         return "Facility added successfully"
@@ -149,7 +149,7 @@ def api_add_classroom():
 def api_update_classroom():
     data = request.get_json()
     id = data['id']
-    capacity = data['capicity']
+    capacity = data['capacity']
     name = data['name']
     facilityid = data['facility_id']
     
@@ -219,14 +219,14 @@ def api_add_teacher():
     data = request.get_json()
     firstname = data['firstname']
     lastname = data['lastname']
-    room = data['room']
+    classroomid = data['classroom_id']
 
     myCreds = creds.Creds()
     conn = create_connection(myCreds.hostname, myCreds.uname, myCreds.passwd, myCreds.dbname)
     if conn is not None:
         cursor=conn.cursor()
-        cursor.execute("INSERT INTO teacher (firstname, lastname, room) VALUES (%s, %s, %s)", 
-                       (firstname, lastname, room))
+        cursor.execute("INSERT INTO teacher (firstname, lastname, classroom_id) VALUES (%s, %s, %s)", 
+                       (firstname, lastname, classroomid))
         conn.commit()
         conn.close()
         return "Teacher added successfully"
@@ -240,14 +240,14 @@ def api_update_teacher():
     id = data['id']
     firstname = data['firstname']
     lastname = data['lastname']
-    room = data['room']
+    classroomid = data['classroom_id']
     
     myCreds = creds.Creds()
     conn = create_connection(myCreds.hostname, myCreds.uname, myCreds.passwd, myCreds.dbname)
     if conn is not None:
         cursor = conn.cursor()
-        cursor.execute("UPDATE teacher SET firstname=%s, lastname=%s, room=%s WHERE id=%s",
-                       (firstname, lastname, room, id))
+        cursor.execute("UPDATE teacher SET firstname=%s, lastname=%s, classroom_id=%s WHERE id=%s",
+                       (firstname, lastname, classroomid, id))
         conn.commit()
         conn.close()
         return "Teacher updated successfully."
@@ -309,14 +309,14 @@ def api_add_child():
     firstname = data['firstname']
     lastname = data['lastname']
     age = data['age']
-    room = data['room']
+    classroomid = data['classroom_id']
 
     myCreds = creds.Creds()
     conn = create_connection(myCreds.hostname, myCreds.uname, myCreds.passwd, myCreds.dbname)
     if conn is not None:
         cursor=conn.cursor()
-        cursor.execute("INSERT INTO child (firstname, lastname, age, room) VALUES (%s, %s, %s, %s)", 
-                       (firstname, lastname, age, room))
+        cursor.execute("INSERT INTO child (firstname, lastname, age, classroom_id) VALUES (%s, %s, %s, %s)", 
+                       (firstname, lastname, age, classroomid))
         conn.commit()
         conn.close()
         return "Child added successfully"
@@ -331,17 +331,17 @@ def api_update_child():
     firstname = data['firstname']
     lastname = data['lastname']
     age = data['age']
-    room = data['room']
+    classroomid = data['classroom_id']
     
     myCreds = creds.Creds()
     conn = create_connection(myCreds.hostname, myCreds.uname, myCreds.passwd, myCreds.dbname)
     if conn is not None:
         cursor = conn.cursor()
-        cursor.execute("UPDATE teacher SET firstname=%s, lastname=%s, age=%s, room=%s WHERE id=%s",
-                       (firstname, lastname, age, room, id))
+        cursor.execute("UPDATE child SET firstname=%s, lastname=%s, age=%s, classroom_id=%s WHERE id=%s",
+                       (firstname, lastname, age, classroomid, id))
         conn.commit()
         conn.close()
-        return "Teacher updated successfully."
+        return "Child updated successfully."
     else:
         return "Error connecting to database."
 
